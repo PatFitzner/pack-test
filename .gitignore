@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Environment / secrets
+.env
+.env.*
+
+# DuckDB
+*.duckdb
+*.duckdb.wal
+
+# dbt
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+dbt/.user.yml
+dbt/package-lock.yml
+
+# Evidence (dbt/reports/)
+dbt/reports/node_modules/
+dbt/reports/.evidence/
+dbt/reports/build/
+dbt/reports/.svelte-kit/
+dbt/reports/package-lock.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

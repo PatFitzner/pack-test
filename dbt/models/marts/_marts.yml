@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: user_metrics
+    description: Per-user session metrics
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mentor_metrics
+    description: Per-mentor metrics including rebooking rate
+    columns:
+      - name: mentor_id
+        tests:
+          - unique
+          - not_null
+
+  - name: metrics_rebooking_rates
+    description: >
+      Rebooking rates aggregated by mentor tier — the CEO's answer.
+      Same-mentor rebooking rate: % of users who had a second session
+      with the same mentor within 30 days of their first.
+    columns:
+      - name: tier
+        tests:
+          - unique
+          - not_null

@@ -1,0 +1,71 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw tables loaded by Python ingestion script
+    schema: main
+    tables:
+      - name: raw_users
+        description: User records from Postgres export (may contain duplicates)
+      - name: raw_mentors
+        description: Mentor tier data from ops Google Sheet
+      - name: raw_booking_events
+        description: Event stream from third-party booking tool
+
+models:
+  - name: stg_users
+    description: Deduplicated user records
+    columns:
+      - name: user_id
+        description: Unique user identifier (VARCHAR)
+      - name: company_id
+        description: Company the user belongs to
+      - name: signup_date
+        description: Date the user signed up
+      - name: status
+        description: User status (active, churned)
+
+  - name: stg_mentors
+    description: Mentor records with tier classification
+    columns:
+      - name: mentor_id
+        description: Unique mentor identifier (M-N format)
+      - name: tier
+        description: Mentor tier (Gold, Silver, Bronze)
+      - name: hourly_rate
+        description: Mentor hourly rate in dollars
+
+  - name: stg_booking_events
+    description: Non-session booking events (requests, confirmations, cancellations)
+    columns:
+      - name: event_id
+        description: Unique event identifier
+      - name: user_id
+        description: User who initiated the booking
+      - name: mentor_id
+        description: Mentor involved in the booking
+      - name: event_timestamp
+        description: When the event occurred
+      - name: event_type
+        description: Type of booking event
+
+  - name: stg_sessions
+    description: >
+      Sessions reconstructed from session_started/session_ended events
+      using FIFO matching. Each session_started anchors a session.
+      Missing session_ended defaults to 30-minute duration.
+    columns:
+      - name: session_id
+        description: event_id from the session_started event
+      - name: user_id
+        description: User in the session
+      - name: mentor_id
+        description: Mentor in the session
+      - name: started_at
+        description: Session start timestamp
+      - name: ended_at
+        description: Session end timestamp (NULL if missing)
+      - name: is_synthetic_ending
+        description: True when no session_ended event was found (duration defaults to 30 min)
+      - name: duration_minutes
+        description: Session duration in minutes (30 if ended_at is NULL)

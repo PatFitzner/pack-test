@@ -1,0 +1,27 @@
+services:
+  warehouse:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+      - ./output:/app/output
+
+  dbt:
+    build: ./dbt
+    volumes:
+      - ./dbt:/app/dbt
+      - ./output:/app/output
+
+  reports:
+    build: ./dbt
+    working_dir: /app/dbt/reports
+    command: bash -c "npm install && npm run sources && npx evidence dev --host 0.0.0.0"
+    volumes:
+      - ./dbt:/app/dbt
+      - ./output:/app/output
+      - reports_node_modules:/app/dbt/reports/node_modules
+    ports:
+      - "3000:3000"
+
+volumes:
+  reports_node_modules:

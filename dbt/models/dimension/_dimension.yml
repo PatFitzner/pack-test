@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: dim_users
+    description: User dimension — cleaned, deduplicated user records
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_mentors
+    description: Mentor dimension with tier classification
+    columns:
+      - name: mentor_id
+        tests:
+          - unique
+          - not_null
+      - name: tier
+        tests:
+          - accepted_values:
+              values: ['Gold', 'Silver', 'Bronze']

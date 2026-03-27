@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: fct_sessions
+    description: Reconstructed mentoring sessions with duration
+    columns:
+      - name: session_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: mentor_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_mentors')
+              field: mentor_id
+              config:
+                severity: warn
+      - name: started_at
+        tests:
+          - not_null
+      - name: is_synthetic_ending
+        description: True when no session_ended event was found (duration defaults to 30 min)
+
+  - name: fct_booking_events
+    description: Non-session booking events (requests, confirmations, cancellations)
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: event_type
+        tests:
+          - accepted_values:
+              values: ['booking_requested', 'booking_confirmed', 'booking_cancelled']
