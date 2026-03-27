@@ -1,0 +1,8 @@
+services:
+  warehouse:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+      - ./models:/app/models
+      - ./output:/app/output
