@@ -50,7 +50,8 @@ docker compose down
 ├── output/                # DuckDB database file (it won't exist until you run this processes). 
 ├── Dockerfile             # Python container (warehouse/ingestion)
 ├── docker-compose.yml
-└── requirements.txt       # Reset repo to pre-build state
+├── clean.sh               # Reset repo to pre-build state
+└── requirements.txt
 ```
 
 ---
