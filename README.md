@@ -72,7 +72,7 @@ SQLite was the other option. I chose DuckDB because you mention that we want to 
 
 The premise already requested **`dim_users`** and **`dim_mentors`**, which were a no-brainer. **`fct_sessions`** was also requested, but I decided to split it into 2 models: the already mentioned **`fct_sessions`**, and an additional **`fct_booking_events`**.
 
-I have decided to do this because the data provided in `booking_events.json` is, as its name suggests, an event stream (presumably from a CDP). The term "session" is infamously ambiguous in our industry, referring both to a browsing/platform usage session, as well as to, in our case, a mentoring session. I've been bit by this before, and it is a real pain. To address this ambiguity, we differentiate two types of booking_event: those that constitute mentoring session boundaries (`session_started` and `session_ended`), and those that constitute user or mentor actions in the platform (booking requests, confirmations, cancellations...). This way, each table includes facts related to each other by their conceptual meaning, not by the system they happened to come from.
+I have decided to do this because the data provided in `booking_events.json` is, as its name suggests, an event stream (presumably from a CDP). The term "session" is infamously ambiguous in our industry, referring both to a browsing/platform usage session, as well as to, in our case, a mentoring session. I've been bit by this before, and it is a real pain. To address this ambiguity, we differentiate two types of booking_event: those that constitute mentoring session boundaries (`session_started` and `session_ended`), and those that constitute user or mentor actions in the platform (booking requests, confirmations, cancellations...). This way, each table includes facts related to each other by their conceptual meaning, rather than by the system they happened to come from.
 
 - **`dim_users`** and **`dim_mentors`** — clean reference tables. Deduplication and type coercion happen at ingestion so dimensions are trustworthy join targets.
 - **`fct_sessions`** — the hard part. Reconstructs sessions from an event stream using FIFO matching: `session_started` and `session_ended` events are paired per (user, mentor) by chronological order. Missing `session_ended` events default to 30-minute duration per the spec.
@@ -108,7 +108,7 @@ Initially, though, built-in dbt tests provide an excellent baseline without any 
 
 Right now the pipeline is "run these four scripts in order." In production, you need: scheduled runs, dependency management, failure alerts, backfill support, and observability. Airflow is the established choice (larger ecosystem, more hiring pool), and the one I have experience with. Dagster is the modern choice (asset-based, built-in dbt integration), but I have no experience with it.
 
-I would suggest Airflow as a first step, as it is not explicitly built for data, therefore we could orchestrate other business processes and trigger our data pipelines with awareness of business process' state.
+I would suggest Airflow as a first step, as it is not explicitly built for data, therefore we could orchestrate other business processes and trigger our data pipelines with awareness of these business process' state.
 
 ### BI Layer: Metabase
 
